@@ -21,6 +21,8 @@
 #include "cinder/CameraUi.h"
 #include "cinder/TriMesh.h"
 #include "cinder/Rand.h"
+
+#include "cinder/ImageIo.h"
 #include "Resources.h"
 
 using namespace ci;
@@ -32,6 +34,7 @@ public:
     void setup() override;
     void update() override;
     void draw() override;
+    void	writeObj();
     
     void mouseMove( MouseEvent event ) override;
     
@@ -107,7 +110,6 @@ void SentidosApp::setup()
 
 void SentidosApp::update()
 {
-    
     float offset = getElapsedSeconds() * 4.0f;
     
     auto mappedPosAttrib = mVboMesh->mapAttrib3f( geom::Attrib::POSITION, false );
@@ -134,13 +136,22 @@ void SentidosApp::update()
         ++mappedPosAttribRef;
     }
     
-    
     // Animate our mesh.
     //mTransform = mat4( 1.0f );
     //mTransform *= rotate( sin( (float) getElapsedSeconds() * 3.0f ) * 0.08f, vec3( 1, 0, 0 ) );
     //mTransform *= rotate( (float) getElapsedSeconds() * 0.1f, vec3( 0, 1, 0 ) );
     //mTransform *= rotate( sin( (float) getElapsedSeconds() * 4.3f ) * 0.09f, vec3( 0, 0, 1 ) );
 }
+
+void SentidosApp::writeObj()
+{
+    fs::path filePath = getSaveFilePath();
+    if( ! filePath.empty() ) {
+        console() << "writing mesh to file path: " << filePath << std::endl;
+        ci::writeObj(writeFile(filePath), mTriMesh);
+    }
+}
+
 
 void SentidosApp::draw()
 {
@@ -159,8 +170,6 @@ void SentidosApp::draw()
         gl::ScopedColor color( Color::gray( 0.2f ) );
         mWirePlane->draw();
     }
-    
-    
     
     for( size_t v = 0; v < mTriMesh->getNumVertices(); ++v ){
     }

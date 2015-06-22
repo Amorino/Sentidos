@@ -20,6 +20,9 @@
 		5323E6B20EAFCA74003A9687 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5323E6B10EAFCA74003A9687 /* CoreVideo.framework */; };
 		5E370A7060FA466BBB9BB867 /* CinderApp.icns in Resources */ = {isa = PBXBuildFile; fileRef = 730FBD9D3E18489FA359E4B6 /* CinderApp.icns */; };
 		6215D0EF1B34E64700DCC39B /* sentido.obj in Resources */ = {isa = PBXBuildFile; fileRef = 6215D0EE1B34E64700DCC39B /* sentido.obj */; };
+		6225C3481B38A7EC007F0BFD /* output.msh in Resources */ = {isa = PBXBuildFile; fileRef = 6225C3471B38A7EC007F0BFD /* output.msh */; };
+		6225C34C1B38AD93007F0BFD /* sentido.msh in Resources */ = {isa = PBXBuildFile; fileRef = 6225C34B1B38AD93007F0BFD /* sentido.msh */; };
+		6225C34E1B38CFD7007F0BFD /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 6225C34D1B38CFD7007F0BFD /* assets */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
@@ -40,6 +43,9 @@
 		33E09647E86846B48CA54FA1 /* Sentidos_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = Sentidos_Prefix.pch; sourceTree = "<group>"; };
 		5323E6B10EAFCA74003A9687 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = /System/Library/Frameworks/CoreVideo.framework; sourceTree = "<absolute>"; };
 		6215D0EE1B34E64700DCC39B /* sentido.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = sentido.obj; path = ../resources/sentido.obj; sourceTree = "<group>"; };
+		6225C3471B38A7EC007F0BFD /* output.msh */ = {isa = PBXFileReference; lastKnownFileType = file; path = output.msh; sourceTree = "<group>"; };
+		6225C34B1B38AD93007F0BFD /* sentido.msh */ = {isa = PBXFileReference; lastKnownFileType = file; path = sentido.msh; sourceTree = "<group>"; };
+		6225C34D1B38CFD7007F0BFD /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = "<group>"; };
 		730FBD9D3E18489FA359E4B6 /* CinderApp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = CinderApp.icns; path = ../resources/CinderApp.icns; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Sentidos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sentidos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A071D4A631EB4F87A32B8C84 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -143,6 +149,9 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				6225C34D1B38CFD7007F0BFD /* assets */,
+				6225C34B1B38AD93007F0BFD /* sentido.msh */,
+				6225C3471B38A7EC007F0BFD /* output.msh */,
 				6215D0EE1B34E64700DCC39B /* sentido.obj */,
 				730FBD9D3E18489FA359E4B6 /* CinderApp.icns */,
 				A071D4A631EB4F87A32B8C84 /* Info.plist */,
@@ -211,8 +220,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6225C34E1B38CFD7007F0BFD /* assets in Resources */,
+				6225C3481B38A7EC007F0BFD /* output.msh in Resources */,
 				6215D0EF1B34E64700DCC39B /* sentido.obj in Resources */,
 				5E370A7060FA466BBB9BB867 /* CinderApp.icns in Resources */,
+				6225C34C1B38AD93007F0BFD /* sentido.msh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

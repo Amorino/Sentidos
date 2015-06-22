@@ -54,7 +54,11 @@ private:
     gl::BatchRef		mWireCube;
     gl::BatchRef		mWirePlane;
     gl::BatchRef		mMesh;
+    gl::BatchRef		mNormals;
     
+    gl::BatchRef		mPrimitiveNormalLines, mPrimitiveTangentLines;
+    gl::BatchRef        mBatch;
+    gl::GlslProgRef     mGlsl;
     CameraPersp			mCamera;
     CameraUi			mCamUi;
     
@@ -64,7 +68,13 @@ private:
 
 void SentidosApp::setup()
 {
-    //m0Mesh.read( loadResource( RES_KESTREL ) );
+    m0Mesh.read( loadResource( RES_KESTREL ) );
+    
+#if defined( CINDER_GL_ES )
+    mGlsl = gl::GlslProg::create( loadAsset( "shader_es2.vert" ), loadAsset( "shader_es2.frag" ) );
+#else
+    mGlsl = gl::GlslProg::create( loadAsset( "shader.vert" ), loadAsset( "shader.frag" ) );
+#endif
     
     ObjLoader loader( (DataSourceRef)loadResource( RES_SENTIDO_OBJ ) );
     mTriMesh = TriMesh::create( loader );
@@ -96,21 +106,99 @@ void SentidosApp::setup()
     
     mMesh = gl::Batch::create( *mTriMesh, lambertShader );
     mWirePlane = gl::Batch::create( geom::WirePlane().size( vec2( 10 ) ).subdivisions( ivec2( 10 ) ), colorShader );
-    mWireCube = gl::Batch::create( geom::WireCube(), colorShader );
     
+    mWireCube = gl::Batch::create( geom::WireCube(), colorShader );
+    vector<gl::VboMesh::Layout> bufferLayout = {
+        gl::VboMesh::Layout().usage( GL_DYNAMIC_DRAW ).attrib( geom::Attrib::POSITION, 3 ),
+        gl::VboMesh::Layout().usage( GL_STATIC_DRAW ).attrib( geom::Attrib::TEX_COORD_0, 2 )
+    };
     
     mVboMesh = mMesh->getVboMesh();
     mVboMeshRef = mMesh->getVboMesh();
     
     
+//    TriMesh::Format fmt = TriMesh::Format().positions().normals().texCoords().tangents();
+//    
+//    TriMesh mesh( loader, fmt );
+//    AxisAlignedBox bbox = mesh.calcBoundingBox();
+//    
+//    vec3 size = bbox.getMax() - bbox.getMin();
+//    float scale = std::max( std::max( size.x, size.y ), size.z ) / 25.0f;
+//    mPrimitiveNormalLines = gl::Batch::create( mesh >> geom::VertexNormalLines( scale ), gl::getStockShader( gl::ShaderDef().color() ) );
+//    if( mesh.hasTangents() )
+//        mPrimitiveTangentLines = gl::Batch::create( mesh >> geom::VertexNormalLines( scale, geom::TANGENT ), gl::getStockShader( gl::ShaderDef().color() ) );
+//    else
+//        mPrimitiveTangentLines.reset();
+    
+    
+    
     console() << "VBO: " << mVboMesh->getNumVertices() << std::endl;
     
+//    auto mappedPosAttribN = mVboMesh->mapAttrib3f( geom::Attrib::NORMAL, false );
+//    auto mappedPosAttrib = mVboMesh->mapAttrib3f( geom::Attrib::POSITION, false );
+//    
+//    for( int i = 0; i < mVboMesh->getNumVertices(); i++ ) {
+//        vec3 &pos = *mappedPosAttrib;
+//        vec3 &ref = *mappedPosAttribN;
+//        mappedPosAttrib->y = pos.y + (ref.y * 0.1);
+//        mappedPosAttrib->x = pos.x + (ref.x * 0.1);
+//        mappedPosAttrib->z = pos.z + (ref.z * 0.1);
+//        //console() << "Normal: " << pos << std::endl;
+//        ++mappedPosAttrib;
+//        ++mappedPosAttribN;
+//    }
+//    
+//
+//    auto mappedPosAttribP = mVboMesh->mapAttrib3f( geom::Attrib::POSITION, false );
+//    
+//    for( int i = 0; i < mVboMesh->getNumVertices(); i++ ) {
+//        vec3 &pos = *mappedPosAttribP;
+//        console() << "Position: " << pos << std::endl;
+//        ++mappedPosAttribP;
+//    }
+    
+//    AxisAlignedBox bbox = m0Mesh.calcBoundingBox();
+//
+//    vec3 size = bbox.getMax() - bbox.getMin();
+//    float scale = std::max( std::max( size.x, size.y ), size.z ) / 25.0f;
+//    mPrimitiveNormalLines = gl::Batch::create( m0Mesh >> geom::VertexNormalLines( scale ), gl::getStockShader( gl::ShaderDef().color() ) );
+//    if( m0Mesh.hasTangents() )
+//        mPrimitiveTangentLines = gl::Batch::create( m0Mesh >> geom::VertexNormalLines( scale, geom::TANGENT ), gl::getStockShader( gl::ShaderDef().color() ) );
+//    else
+//        mPrimitiveTangentLines.reset();
     
 }
 
 void SentidosApp::update()
 {
-    float offset = getElapsedSeconds() * 4.0f;
+    
+    float offset = getElapsedSeconds() * 0.001f;
+    
+    auto mappedPosAttribN = mVboMeshRef->mapAttrib3f( geom::Attrib::NORMAL, false );
+    auto mappedPosAttrib = mVboMesh->mapAttrib3f( geom::Attrib::POSITION, false );
+    
+    for( int i = 0; i < mVboMesh->getNumVertices(); i++ ) {
+        int rand = mRandom.randInt(1, 204);
+        if (i == rand){
+            vec3 &posref = *mappedPosAttrib;
+            vec3 &ref = *mappedPosAttribN;
+        
+            float randy = mRandom.randFloat(0.00, ref.y * offset);
+            float randx = mRandom.randFloat(0.00, ref.y * offset);
+            float randz = mRandom.randFloat(0.00, ref.y * offset);
+        
+            mappedPosAttrib->y = posref.y + randy;
+            mappedPosAttrib->x = posref.x + randx;
+            mappedPosAttrib->z = posref.z + randz;
+        }
+            //console() << "Normal: " << pos << std::endl;
+            ++mappedPosAttrib;
+            ++mappedPosAttribN;
+    }
+    mappedPosAttrib.unmap();
+    mappedPosAttribN.unmap();
+    
+    /*
     
     auto mappedPosAttrib = mVboMesh->mapAttrib3f( geom::Attrib::POSITION, false );
     auto mappedPosAttribRef = mVboMeshRef->mapAttrib3f( geom::Attrib::POSITION, false );
@@ -119,7 +207,9 @@ void SentidosApp::update()
         int rand = mRandom.randFloat(1, 204);
         if (i == rand){
             float rand = mRandom.randFloat(0.00, 0.03);
-            vec3 ref = *mappedPosAttribRef;
+            vec3 &ref = *mappedPosAttribRef;
+        
+            
             float x, y, z;
             if (ref.x > 0)  x = ref.x + rand;
             else  x = ref.x - rand;
@@ -134,7 +224,7 @@ void SentidosApp::update()
         }
         ++mappedPosAttrib;
         ++mappedPosAttribRef;
-    }
+    }*/
     
     // Animate our mesh.
     //mTransform = mat4( 1.0f );
@@ -145,6 +235,9 @@ void SentidosApp::update()
 
 void SentidosApp::writeObj()
 {
+    
+    mBatch = gl::Batch::create(mVboMesh, mGlsl);
+    
     fs::path filePath = getSaveFilePath();
     if( ! filePath.empty() ) {
         console() << "writing mesh to file path: " << filePath << std::endl;
@@ -171,8 +264,11 @@ void SentidosApp::draw()
         mWirePlane->draw();
     }
     
-    for( size_t v = 0; v < mTriMesh->getNumVertices(); ++v ){
-    }
+    gl::setWireframeEnabled( ! gl::isWireframeEnabled() );
+
+    
+    gl::ScopedColor colorScope( Color( 1, 1, 0 ) );
+    //mPrimitiveNormalLines->draw();
     
     // Draw the mesh.
     {
@@ -189,14 +285,16 @@ void SentidosApp::draw()
     }
     
     // Perform 3D picking now, so we can draw the result as a vector.
-    vec3 pickedPoint, pickedNormal;
-    if( performPicking( &pickedPoint, &pickedNormal ) ) {
-        gl::ScopedColor color( Color( 0, 1, 0 ) );
-        
-        // Draw an arrow to the picked point along its normal.
-        gl::ScopedGlslProg shader( gl::getStockShader( gl::ShaderDef().color().lambert() ) );
-        gl::drawVector( pickedPoint + pickedNormal, pickedPoint );
-    }
+    
+    
+//    vec3 pickedPoint, pickedNormal;
+//    if( performPicking( &pickedPoint, &pickedNormal ) ) {
+//        gl::ScopedColor color( Color( 0, 1, 0 ) );
+//        
+//        // Draw an arrow to the picked point along its normal.
+//        gl::ScopedGlslProg shader( gl::getStockShader( gl::ShaderDef().color().lambert() ) );
+//        gl::drawVector( pickedPoint + pickedNormal, pickedPoint );
+//    }
 }
 
 void SentidosApp::mouseMove( MouseEvent event )
@@ -246,12 +344,17 @@ bool SentidosApp::performPicking( vec3 *pickedPoint, vec3 *pickedNormal )
     for( size_t i = 0; i < polycount; ++i ) {
         // Get a single triangle from the mesh.
         vec3 v0, v1, v2;
+        mTriMesh->getNormals();
         mTriMesh->getTriangleVertices( i, &v0, &v1, &v2 );
         
         // Transform triangle to world space.
         v0 = vec3( mTransform * vec4( v0, 1.0 ) );
         v1 = vec3( mTransform * vec4( v1, 1.0 ) );
         v2 = vec3( mTransform * vec4( v2, 1.0 ) );
+        
+//        console() << "V00: " << v0 << std::endl;
+//        console() << "V01: " << v1 << std::endl;
+//        console() << "V02: " << v2 << std::endl;
         
         // Test to see if the ray intersects this triangle.
         if( ray.calcTriangleIntersection( v0, v1, v2, &distance ) ) {

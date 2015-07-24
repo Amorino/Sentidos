@@ -264,7 +264,7 @@ void SentidosApp::draw()
         mWirePlane->draw();
     }
     
-    gl::setWireframeEnabled( ! gl::isWireframeEnabled() );
+    //gl::setWireframeEnabled( ! gl::isWireframeEnabled() );
 
     
     gl::ScopedColor colorScope( Color( 1, 1, 0 ) );
